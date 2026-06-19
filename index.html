@@ -405,7 +405,7 @@ function makeSim(cvId,getFounds,getZ,getView,getMethod,getN){
     ctx.save();ctx.translate(10,mTop+plotH/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.fillStyle='#64807d';ctx.fillText('mélység z',0,0);ctx.restore();
 
     // ── TENGELYSZELVÉNY: σz(z) az alaptest tengelyében (x=cx), közös mélység-tengely ──
-    const sMax=Math.max(pmax,1);
+    const sMax=CMAX;   // RÖGZÍTETT skála (0…300 kPa) — így p állítása láthatóan változtatja a görbét
     const PSX=s=>pX0+Math.max(0,Math.min(1,s/sMax))*pW;
     ctx.fillStyle='#fff';ctx.fillRect(pX0,mTop,pW,plotH);
     ctx.strokeStyle='#efe9dd';ctx.lineWidth=1;
