@@ -167,7 +167,7 @@ h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
 <section id="hagyma" class="reveal">
   <div class="eyebrow">2 · A fő attrakció</div>
   <h2>Interaktív feszültséghagyma</h2>
-  <p class="lead">Egy sávalap alatti <strong>Boussinesq-féle</strong> (rugalmasságtani, „pontos") feszültségmező. A színek a Δσ<sub>z</sub>/p arányt mutatják, a fehér vonalak az izobárok. Állítsd a szélességet és a terhelést — figyeld, hogyan nyúlik mélyebbre a hagyma a szélesebb alapnál (azonos talpfeszültség mellett is!).</p>
+  <p class="lead">Egy sávalap alatti függőleges feszültségmező — alapból <strong>Boussinesq-féle</strong> (rugalmasságtani, „pontos"), de <strong>Westergaard</strong> és <strong>Fröhlich</strong> módszerre is váltható. A színek a Δσ<sub>z</sub>/p arányt mutatják, a fehér vonalak az izobárok. Állítsd a szélességet és a terhelést — figyeld, hogyan nyúlik mélyebbre a hagyma a szélesebb alapnál (azonos talpfeszültség mellett is!).</p>
   <div class="panel">
     <div class="sim">
       <div>
@@ -179,10 +179,18 @@ h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
         <div class="ctrl" style="margin-top:1rem"><label>Alapszélesség B <span class="val" id="b1v"></span></label><input type="range" id="b1" min="1" max="6" step="0.5"></div>
         <div class="ctrl"><label>Talpfeszültség p <span class="val" id="p1v"></span></label><input type="range" id="p1" min="50" max="300" step="10"></div>
         <div class="ctrl"><label>Vizsgált mélység z <span class="val" id="z1v"></span></label><input type="range" id="z1" min="0.5" max="20" step="0.5"></div>
+        <label style="font-family:var(--mono);font-size:11px;color:var(--ink3);display:block;margin-top:1rem">Feszültségeloszlási módszer</label>
+        <div class="toggle-row" id="m1">
+          <button class="tg on" data-m="bous">Boussinesq</button>
+          <button class="tg" data-m="west">Westergaard</button>
+          <button class="tg" data-m="froh">Fröhlich</button>
+        </div>
+        <div class="ctrl"><label>Fröhlich koncentráció n <span class="val" id="nf1v"></span></label><input type="range" id="nf1" min="3" max="6" step="1"></div>
         <p style="font-size:.88rem;margin-top:.8rem">A vízszintes szaggatott vonal a vizsgált z mélység; jobbra a tengely menti Δσ<sub>z</sub> érték. A nézet rögzített, így jól látszik: <strong>szélesebb B</strong> mélyebbre nyúló hagymát ad, <strong>nagyobb p</strong> pedig lejjebb tolja az izobárokat és „forróbb" mezőt ad.</p>
       </div>
     </div>
   </div>
+  <div class="note"><strong>Háromféle módszer.</strong> <strong>Boussinesq</strong> — homogén rugalmas féltér (referencia). <strong>Westergaard</strong> — vékonyréteges, oldalirányban kötött talaj → keskenyebb, kevésbé szétterülő mező. <strong>Fröhlich</strong> — koncentrációs faktor n-nel hangolható: n = 3 ≡ Boussinesq, nagyobb n (4–6) a tengely mentén koncentrálja a feszültséget (mélységgel növekvő merevségű, szemcsés talaj). Váltsd át a módszert a hagyma mellett, és figyeld az izobárkép változását.</div>
   <div class="note warn"><strong>Ezért veszélyesek a nagy alapok.</strong> Két alaptest azonos talpfeszültséggel, de eltérő szélességgel <em>nem</em> süllyed egyformán: a szélesebb alap hagymája mélyebb rétegeket is megterhel, így összességében nagyobbat süllyed — még akkor is, ha a felszíni feszültség ugyanakkora.</div>
 </section>
 
@@ -203,6 +211,13 @@ h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
         <div class="ctrl"><label>Hézag az alapok közt <span class="val" id="g2v"></span></label><input type="range" id="g2" min="0.5" max="10" step="0.5"></div>
         <div class="ctrl"><label>Talpfeszültség p <span class="val" id="p2v"></span></label><input type="range" id="p2" min="50" max="300" step="10"></div>
         <div class="ctrl"><label>Vizsgált mélység z <span class="val" id="z2v"></span></label><input type="range" id="z2" min="0.5" max="20" step="0.5"></div>
+        <label style="font-family:var(--mono);font-size:11px;color:var(--ink3);display:block;margin-top:1rem">Feszültségeloszlási módszer</label>
+        <div class="toggle-row" id="m2">
+          <button class="tg on" data-m="bous">Boussinesq</button>
+          <button class="tg" data-m="west">Westergaard</button>
+          <button class="tg" data-m="froh">Fröhlich</button>
+        </div>
+        <div class="ctrl"><label>Fröhlich koncentráció n <span class="val" id="nf2v"></span></label><input type="range" id="nf2" min="3" max="6" step="1"></div>
       </div>
     </div>
   </div>
@@ -272,13 +287,36 @@ h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
 "use strict";
 const $=id=>document.getElementById(id);
 
-/* ───────── Boussinesq sávteher ───────── */
-function stripSigma(x,z,xL,xR,p){
+/* ───────── feszültségeloszlási módszerek (sávteher) ───────── */
+// Boussinesq — homogén rugalmas féltér (zárt képlet)
+function stripBous(x,z,xL,xR,p){
   if(z<=0.0001)return (x>=xL&&x<=xR)?p:0;
   const a1=Math.atan2(x-xL,z),a2=Math.atan2(x-xR,z),beta=a1-a2;
   return (p/Math.PI)*(beta+Math.sin(beta)*Math.cos(a1+a2));
 }
-function fieldAt(x,z,founds){let s=0;for(const f of founds)s+=stripSigma(x,z,f.xL,f.xR,f.p);return s;}
+// Westergaard — vékonyréteges, oldalirányban kötött talaj (μ=0 → η=1/√2), zárt képlet
+const WETA=Math.SQRT1_2;
+function stripWest(x,z,xL,xR,p){
+  if(z<=0.0001)return (x>=xL&&x<=xR)?p:0;
+  return (p/Math.PI)*(Math.atan((x-xL)/(WETA*z))-Math.atan((x-xR)/(WETA*z)));
+}
+// Fröhlich — koncentrációs faktor n (n=3 ≡ Boussinesq), numerikus szélesség-integrál
+let _frohC={};
+function frohC(n){ if(_frohC[n]!=null)return _frohC[n];
+  const M=240; let I=0; for(let k=0;k<M;k++){const th=-Math.PI/2+(k+0.5)/M*Math.PI; I+=Math.pow(Math.cos(th),n-1);} I*=Math.PI/M;
+  return _frohC[n]=1/I; }
+function stripFroh(x,z,xL,xR,p,n){
+  if(z<=0.0001)return (x>=xL&&x<=xR)?p:0;
+  const C=frohC(n),N=24,w=(xR-xL)/N; let s=0;
+  for(let k=0;k<N;k++){const dx=x-(xL+(k+0.5)*w),cth=z/Math.sqrt(dx*dx+z*z); s+=C*(p*w/z)*Math.pow(cth,n+1);}
+  return s;
+}
+function stripSigma(x,z,xL,xR,p,method,n){
+  if(method==='west')return stripWest(x,z,xL,xR,p);
+  if(method==='froh')return stripFroh(x,z,xL,xR,p,n||3);
+  return stripBous(x,z,xL,xR,p);
+}
+function fieldAt(x,z,founds,method,n){let s=0;for(const f of founds)s+=stripSigma(x,z,f.xL,f.xR,f.p,method,n);return s;}
 
 /* színskála: 0 → talajszín, növekvő → sárga→narancs→rozsda→sötétvörös */
 function ramp(t){ // t in 0..1 (Δσ/pmax)
@@ -300,7 +338,7 @@ const ISO_KPA=[10,25,50,75,100,150,200,250]; /* abszolút izobár-szintek [kPa] 
 
 /* általános mezőrajzoló: canvas + alaptestek + izobárok + tengelyek
    getView(founds) → {xmin,xmax,Zmax}  — RÖGZÍTETT (nem skálázódik a teherrel) */
-function makeSim(cvId,getFounds,getZ,getView){
+function makeSim(cvId,getFounds,getZ,getView,getMethod,getN){
   const cv=$(cvId),ctx=cv.getContext('2d');
   const W=cv.width,H=cv.height;
   const mTop=28,mBot=24,mL=38,mR=14;
@@ -312,6 +350,7 @@ function makeSim(cvId,getFounds,getZ,getView){
     const founds=getFounds();
     const v=getView(founds);
     const xmin=v.xmin,xmax=v.xmax,Zmax=v.Zmax;
+    const method=getMethod?getMethod():'bous', nF=getN?getN():3;
     const cx=(Math.min(...founds.map(f=>f.xL))+Math.max(...founds.map(f=>f.xR)))/2;
     const pmax=Math.max(...founds.map(f=>f.p));
     // mező az offscreen rácsra — ABSZOLÚT színezés (s/CMAX)
@@ -320,7 +359,7 @@ function makeSim(cvId,getFounds,getZ,getView){
       const z=(j+0.5)/GH*Zmax;
       for(let i=0;i<GW;i++){
         const x=xmin+(i+0.5)/GW*(xmax-xmin);
-        const s=fieldAt(x,z,founds);
+        const s=fieldAt(x,z,founds,method,nF);
         const c=ramp(s/CMAX);
         const k=(j*GW+i)*4;
         img.data[k]=c[0];img.data[k+1]=c[1];img.data[k+2]=c[2];img.data[k+3]=255;
@@ -333,7 +372,7 @@ function makeSim(cvId,getFounds,getZ,getView){
     ctx.drawImage(off,mL,mTop,plotW,plotH);
     const SX=x=>mL+(x-xmin)/(xmax-xmin)*plotW;
     const SZ=z=>mTop+z/Zmax*plotH;
-    drawIsobars(ctx,founds,pmax,xmin,xmax,Zmax,SX,SZ);
+    drawIsobars(ctx,founds,pmax,xmin,xmax,Zmax,SX,SZ,method,nF);
     // alaptestek a felszínen
     founds.forEach(f=>{
       const x0=SX(f.xL),x1=SX(f.xR);
@@ -362,12 +401,12 @@ function makeSim(cvId,getFounds,getZ,getView){
 }
 
 /* izobár-kontúrok marching squares-szel — ABSZOLÚT kPa szintek */
-function drawIsobars(ctx,founds,pmax,xmin,xmax,Zmax,SX,SZ){
+function drawIsobars(ctx,founds,pmax,xmin,xmax,Zmax,SX,SZ,method,n){
   const GW=120,GH=90;
   const grid=[];
   for(let j=0;j<=GH;j++){grid[j]=[];for(let i=0;i<=GW;i++){
     const x=xmin+i/GW*(xmax-xmin),z=j/GH*Zmax;
-    grid[j][i]=fieldAt(x,z,founds);   // abszolút kPa
+    grid[j][i]=fieldAt(x,z,founds,method,n);   // abszolút kPa
   }}
   ctx.lineWidth=1;ctx.strokeStyle='rgba(255,255,255,0.8)';
   ctx.font='9px JetBrains Mono';ctx.textAlign='center';
@@ -394,7 +433,7 @@ function drawIsobars(ctx,founds,pmax,xmin,xmax,Zmax,SX,SZ){
   ctx.fillStyle='rgba(255,255,255,0.95)';
   for(const lev of levels){
     let zf=null;
-    for(let z=0.05;z<Zmax;z+=0.04){if(fieldAt(cx,z,founds)<lev){zf=z;break;}}
+    for(let z=0.05;z<Zmax;z+=0.04){if(fieldAt(cx,z,founds,method,n)<lev){zf=z;break;}}
     if(zf&&zf>0.1){ctx.fillText(lev+' kPa',SX(cx),SZ(zf)+10);}
   }
 }
@@ -402,21 +441,23 @@ function drawIsobars(ctx,founds,pmax,xmin,xmax,Zmax,SX,SZ){
 /* ───────── 1. HAGYMA ───────── */
 $("legbar1").style.background=legendCSS();
 $("legbar2").style.background=legendCSS();
-const S1={B:3,p:180,z:4};
+const S1={B:3,p:180,z:4,method:'bous',nf:4};
 const draw1=makeSim('cv1',()=>[{xL:-S1.B/2,xR:S1.B/2,p:S1.p}],()=>S1.z,
-  ()=>({xmin:-10,xmax:10,Zmax:18}));
+  ()=>({xmin:-10,xmax:10,Zmax:18}),()=>S1.method,()=>S1.nf);
 function up1(){
   $("b1v").textContent=S1.B.toFixed(1)+' m';$("p1v").textContent=S1.p+' kPa';$("z1v").textContent=S1.z.toFixed(1)+' m';
   const r=draw1();
-  const sc=fieldAt(0,S1.z,r.founds);
+  const sc=fieldAt(0,S1.z,r.founds,S1.method,S1.nf);
   $("ro1").innerHTML='<div class="chip hot">Tengelyen z-nél <b>Δσz = '+sc.toFixed(1)+' kPa</b></div>'+
     '<div class="chip">= a talpfeszültség <b>'+(sc/S1.p*100).toFixed(0)+'%</b>-a</div>';
 }
 [['b1','B'],['p1','p'],['z1','z']].forEach(([id,k])=>$(id).addEventListener('input',()=>{S1[k]=parseFloat($(id).value);up1();}));
-$("b1").value=S1.B;$("p1").value=S1.p;$("z1").value=S1.z;up1();
+document.querySelectorAll('#m1 .tg').forEach(b=>b.addEventListener('click',()=>{S1.method=b.dataset.m;[...document.querySelectorAll('#m1 .tg')].forEach(x=>x.classList.toggle('on',x===b));up1();}));
+$("nf1").addEventListener('input',()=>{S1.nf=parseInt($("nf1").value);$("nf1v").textContent='n = '+S1.nf;up1();});
+$("b1").value=S1.B;$("p1").value=S1.p;$("z1").value=S1.z;$("nf1").value=S1.nf;$("nf1v").textContent='n = '+S1.nf;up1();
 
 /* ───────── 2. SZUPERPOZÍCIÓ ───────── */
-const S2={n:2,B:2,g:1.5,p:180,z:4};
+const S2={n:2,B:2,g:1.5,p:180,z:4,method:'bous',nf:4};
 function founds2(){
   const a=[];const total=S2.n*S2.B+(S2.n-1)*S2.g;const start=-total/2;
   for(let i=0;i<S2.n;i++){const xL=start+i*(S2.B+S2.g);a.push({xL,xR:xL+S2.B,p:S2.p});}
@@ -427,25 +468,27 @@ const draw2=makeSim('cv2',founds2,()=>S2.z,
     const xL=Math.min(...founds.map(f=>f.xL)), xR=Math.max(...founds.map(f=>f.xR));
     const cx=(xL+xR)/2, half=Math.max((xR-xL)/2+3, 8);
     return {xmin:cx-half,xmax:cx+half,Zmax:18};
-  });
+  },()=>S2.method,()=>S2.nf);
 function up2(){
   $("n2v").textContent=S2.n;$("b2v").textContent=S2.B.toFixed(1)+' m';$("g2v").textContent=S2.g.toFixed(1)+' m';
   $("p2v").textContent=S2.p+' kPa';$("z2v").textContent=S2.z.toFixed(1)+' m';
   const r=draw2();
   const fs=founds2();
-  const midAll=fieldAt(0,S2.z,fs);
+  const midAll=fieldAt(0,S2.z,fs,S2.method,S2.nf);
   let html='<div class="chip hot">Középen z-nél <b>Δσz = '+midAll.toFixed(1)+' kPa</b></div>';
   if(S2.n>1){
     const xc1=(fs[0].xL+fs[0].xR)/2;
-    const alone=stripSigma(xc1,S2.z,fs[0].xL,fs[0].xR,S2.p);
-    const withN=fieldAt(xc1,S2.z,fs);
+    const alone=stripSigma(xc1,S2.z,fs[0].xL,fs[0].xR,S2.p,S2.method,S2.nf);
+    const withN=fieldAt(xc1,S2.z,fs,S2.method,S2.nf);
     const amp=alone>0.01?(withN/alone-1)*100:0;
     html+='<div class="chip">Szélső alap tengelyén a szomszéd(ok) <b>+'+amp.toFixed(0)+'%</b> terhet adnak</div>';
   }
   $("ro2").innerHTML=html;
 }
 [['n2','n'],['b2','B'],['g2','g'],['p2','p'],['z2','z']].forEach(([id,k])=>$(id).addEventListener('input',()=>{S2[k]=parseFloat($(id).value);up2();}));
-$("n2").value=S2.n;$("b2").value=S2.B;$("g2").value=S2.g;$("p2").value=S2.p;$("z2").value=S2.z;up2();
+document.querySelectorAll('#m2 .tg').forEach(b=>b.addEventListener('click',()=>{S2.method=b.dataset.m;[...document.querySelectorAll('#m2 .tg')].forEach(x=>x.classList.toggle('on',x===b));up2();}));
+$("nf2").addEventListener('input',()=>{S2.nf=parseInt($("nf2").value);$("nf2v").textContent='n = '+S2.nf;up2();});
+$("n2").value=S2.n;$("b2").value=S2.B;$("g2").value=S2.g;$("p2").value=S2.p;$("z2").value=S2.z;$("nf2").value=S2.nf;$("nf2v").textContent='n = '+S2.nf;up2();
 
 /* ───────── 3. MÓDSZER-ÖSSZEVETÉS (SVG) ───────── */
 const KANY_Z=[0,0.05,0.10,0.20,0.30,0.40,0.50,0.60,0.80,1.00,1.50,2.00,3.00,4.00,5.00,6.00,7.00,8.00,10.0,15.0,20.0];
