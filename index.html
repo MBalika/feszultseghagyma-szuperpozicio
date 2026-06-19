@@ -185,7 +185,7 @@ h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
           <button class="tg" data-m="west">Westergaard</button>
           <button class="tg" data-m="froh">Fröhlich</button>
         </div>
-        <div class="ctrl"><label>Fröhlich koncentráció n <span class="val" id="nf1v"></span></label><input type="range" id="nf1" min="3" max="6" step="1"></div>
+        <div class="ctrl" id="nfrow1" style="display:none"><label>Fröhlich koncentráció n <span class="val" id="nf1v"></span></label><input type="range" id="nf1" min="3" max="6" step="1"></div>
         <p style="font-size:.88rem;margin-top:.8rem">A vízszintes szaggatott vonal a vizsgált z mélység; jobbra a tengely menti Δσ<sub>z</sub> érték. A nézet rögzített, így jól látszik: <strong>szélesebb B</strong> mélyebbre nyúló hagymát ad, <strong>nagyobb p</strong> pedig lejjebb tolja az izobárokat és „forróbb" mezőt ad.</p>
       </div>
     </div>
@@ -217,7 +217,7 @@ h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
           <button class="tg" data-m="west">Westergaard</button>
           <button class="tg" data-m="froh">Fröhlich</button>
         </div>
-        <div class="ctrl"><label>Fröhlich koncentráció n <span class="val" id="nf2v"></span></label><input type="range" id="nf2" min="3" max="6" step="1"></div>
+        <div class="ctrl" id="nfrow2" style="display:none"><label>Fröhlich koncentráció n <span class="val" id="nf2v"></span></label><input type="range" id="nf2" min="3" max="6" step="1"></div>
       </div>
     </div>
   </div>
@@ -445,6 +445,7 @@ const S1={B:3,p:180,z:4,method:'bous',nf:4};
 const draw1=makeSim('cv1',()=>[{xL:-S1.B/2,xR:S1.B/2,p:S1.p}],()=>S1.z,
   ()=>({xmin:-10,xmax:10,Zmax:18}),()=>S1.method,()=>S1.nf);
 function up1(){
+  $("nfrow1").style.display=(S1.method==='froh')?'':'none';
   $("b1v").textContent=S1.B.toFixed(1)+' m';$("p1v").textContent=S1.p+' kPa';$("z1v").textContent=S1.z.toFixed(1)+' m';
   const r=draw1();
   const sc=fieldAt(0,S1.z,r.founds,S1.method,S1.nf);
@@ -470,6 +471,7 @@ const draw2=makeSim('cv2',founds2,()=>S2.z,
     return {xmin:cx-half,xmax:cx+half,Zmax:18};
   },()=>S2.method,()=>S2.nf);
 function up2(){
+  $("nfrow2").style.display=(S2.method==='froh')?'':'none';
   $("n2v").textContent=S2.n;$("b2v").textContent=S2.B.toFixed(1)+' m';$("g2v").textContent=S2.g.toFixed(1)+' m';
   $("p2v").textContent=S2.p+' kPa';$("z2v").textContent=S2.z.toFixed(1)+' m';
   const r=draw2();
