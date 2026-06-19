@@ -198,7 +198,7 @@ h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
 <section id="szuper" class="reveal">
   <div class="eyebrow">3 · Amikor a hagymák összeérnek</div>
   <h2>Szuperpozíció — a szomszédhatás</h2>
-  <p class="lead">Adj a képhez egy második (és harmadik) alapot, és csökkentsd a köztük lévő hézagot. A feszültségmezők összeadódnak, és a közöttük lévő talajban a Δσ<sub>z</sub> <strong>jóval nagyobb</strong> lehet, mint egyetlen alap alatt — ezért a szomszédos alapok egymás felé <strong>megdőlhetnek</strong>.</p>
+  <p class="lead">Két szomszédos alaptest áll egymás mellett — csökkentsd a köztük lévő hézagot. A feszültségmezők összeadódnak, és a közöttük lévő talajban a Δσ<sub>z</sub> <strong>jóval nagyobb</strong> lehet, mint egyetlen alap alatt — ezért a szomszédos alapok egymás felé <strong>megdőlhetnek</strong>.</p>
   <div class="panel">
     <div class="sim">
       <div>
@@ -207,8 +207,7 @@ h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
       </div>
       <div>
         <div class="readouts" id="ro2"></div>
-        <div class="ctrl" style="margin-top:1rem"><label>Alapok száma <span class="val" id="n2v"></span></label><input type="range" id="n2" min="1" max="3" step="1"></div>
-        <div class="ctrl"><label>Alapszélesség B <span class="val" id="b2v"></span></label><input type="range" id="b2" min="1" max="4" step="0.5"></div>
+        <div class="ctrl" style="margin-top:1rem"><label>Alapszélesség B <span class="val" id="b2v"></span></label><input type="range" id="b2" min="1" max="4" step="0.5"></div>
         <div class="ctrl"><label>Hézag az alapok közt <span class="val" id="g2v"></span></label><input type="range" id="g2" min="0.5" max="10" step="0.5"></div>
         <div class="ctrl"><label>Talpfeszültség p <span class="val" id="p2v"></span></label><input type="range" id="p2" min="50" max="300" step="10"></div>
         <div class="ctrl"><label>Vizsgált mélység z <span class="val" id="z2v"></span></label><input type="range" id="z2" min="0.5" max="20" step="0.5"></div>
@@ -222,7 +221,7 @@ h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
       </div>
     </div>
   </div>
-  <div class="note"><strong>Próbáld ki:</strong> tedd két alapra (n = 2), és csökkentsd a hézagot 0,5 m-re — a chip megmutatja, hány %-kal több terhet kap a szélső alap tengelye a szomszéd miatt. Növeld a hézagot: nagy távolságnál a felerősödés eltűnik, mert a hagymák már nem érnek össze.</div>
+  <div class="note"><strong>Próbáld ki:</strong> csökkentsd a két alap közti hézagot 0,5 m-re — a chip megmutatja, hány %-kal több terhet kap a szélső alap tengelye a szomszéd miatt. Növeld a hézagot: nagy távolságnál a felerősödés eltűnik, mert a hagymák már nem érnek össze.</div>
 </section>
 
 <section id="modszerek" class="reveal">
@@ -508,7 +507,7 @@ const draw2=makeSim('cv2',founds2,()=>S2.z,
   },()=>S2.method,()=>S2.nf);
 function up2(){
   $("nfrow2").style.display=(S2.method==='froh')?'':'none';
-  $("n2v").textContent=S2.n;$("b2v").textContent=S2.B.toFixed(1)+' m';$("g2v").textContent=S2.g.toFixed(1)+' m';
+  $("b2v").textContent=S2.B.toFixed(1)+' m';$("g2v").textContent=S2.g.toFixed(1)+' m';
   $("p2v").textContent=S2.p+' kPa';$("z2v").textContent=S2.z.toFixed(1)+' m';
   const r=draw2();
   const fs=founds2();
@@ -523,10 +522,10 @@ function up2(){
   }
   $("ro2").innerHTML=html;
 }
-[['n2','n'],['b2','B'],['g2','g'],['p2','p'],['z2','z']].forEach(([id,k])=>$(id).addEventListener('input',()=>{S2[k]=parseFloat($(id).value);up2();}));
+[['b2','B'],['g2','g'],['p2','p'],['z2','z']].forEach(([id,k])=>$(id).addEventListener('input',()=>{S2[k]=parseFloat($(id).value);up2();}));
 document.querySelectorAll('#m2 .tg').forEach(b=>b.addEventListener('click',()=>{S2.method=b.dataset.m;[...document.querySelectorAll('#m2 .tg')].forEach(x=>x.classList.toggle('on',x===b));up2();}));
 $("nf2").addEventListener('input',()=>{S2.nf=parseInt($("nf2").value);$("nf2v").textContent='n = '+S2.nf;up2();});
-$("n2").value=S2.n;$("b2").value=S2.B;$("g2").value=S2.g;$("p2").value=S2.p;$("z2").value=S2.z;$("nf2").value=S2.nf;$("nf2v").textContent='n = '+S2.nf;up2();
+$("b2").value=S2.B;$("g2").value=S2.g;$("p2").value=S2.p;$("z2").value=S2.z;$("nf2").value=S2.nf;$("nf2v").textContent='n = '+S2.nf;up2();
 
 /* ───────── 3. MÓDSZER-ÖSSZEVETÉS (SVG) ───────── */
 const KANY_Z=[0,0.05,0.10,0.20,0.30,0.40,0.50,0.60,0.80,1.00,1.50,2.00,3.00,4.00,5.00,6.00,7.00,8.00,10.0,15.0,20.0];
