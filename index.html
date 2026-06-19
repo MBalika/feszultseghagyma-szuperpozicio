@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feszültséghagyma & szuperpozíció — Kögler · Jáky · Kany</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#eef3f1;--card:#f9fbfa;--grid:rgba(13,90,80,0.055);--line:#d3dedb;
+  --ink:#0d272b;--ink2:#34514f;--ink3:#64807d;
+  --accent:#0e7c6b;--accent-soft:#dcefe9;--water:#1b6fae;--water-soft:#ddeaf6;
+  --kog:#1b6fae;--jak:#0e7c6b;--kany:#9a3fb0;--bous:#c2521f;
+  --soil:#e3d9c6;--soil-line:#b9a888;--danger:#a32626;--ok:#2e7d4f;
+  --display:'Archivo',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--paper);color:var(--ink);font-size:16px;line-height:1.7}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px;}
+main{position:relative;z-index:1}
+
+nav{position:sticky;top:0;z-index:300;height:54px;background:rgba(238,243,241,0.94);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 1.4rem;gap:1.6rem;}
+.nav-logo{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.06em;color:var(--accent);white-space:nowrap;text-transform:uppercase}
+.nav-links{display:flex;overflow-x:auto;scrollbar-width:none}.nav-links::-webkit-scrollbar{display:none}
+.nav-link{padding:0 12px;height:54px;display:flex;align-items:center;font-size:13.5px;font-weight:500;color:var(--ink3);
+  text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:color .2s,border-color .2s;}
+.nav-link:hover{color:var(--ink)}.nav-link.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+header.hero{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:4.5rem 1.5rem 3rem;}
+.hero-eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;}
+.hero h1{font-family:var(--display);font-weight:900;letter-spacing:-0.015em;font-size:clamp(2.3rem,6vw,4.1rem);line-height:1.02;color:var(--ink);text-transform:uppercase;}
+.hero h1 .thin{font-weight:600;color:var(--ink3)}
+.hero-sub{max-width:640px;margin-top:1.3rem;font-size:1.06rem;color:var(--ink2)}
+.hero-eq{margin-top:2rem;max-width:640px;font-family:var(--mono);font-size:1.05rem;color:var(--ink);background:var(--card);
+  border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:1rem 1.2rem;}
+.hero-eq small{display:block;font-family:var(--body);color:var(--ink3);font-size:.85rem;margin-top:.5rem}
+
+section{max-width:1040px;margin:0 auto;padding:3.2rem 1.5rem 1rem}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:.7rem;margin-bottom:.7rem;}
+.eyebrow::after{content:'';height:1px;flex:1;background:var(--line)}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,3.4vw,2.1rem);letter-spacing:-.01em;margin-bottom:1rem}
+h3{font-family:var(--display);font-weight:700;font-size:1.12rem;margin:1.6rem 0 .5rem}
+p{margin-bottom:1rem;color:var(--ink2)}p strong{color:var(--ink)}.lead{font-size:1.05rem}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin:1.4rem 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.2rem}
+.card h4{font-family:var(--display);font-weight:700;font-size:.98rem;margin-bottom:.4rem;display:flex;align-items:center;gap:.5rem}
+.card p{font-size:.92rem;margin:0;color:var(--ink2)}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.dot.kog{background:var(--kog)}.dot.jak{background:var(--jak)}.dot.kany{background:var(--kany)}.dot.bous{background:var(--bous)}.dot.accent{background:var(--accent)}
+
+.formula{font-family:var(--mono);background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:8px;padding:.9rem 1.2rem;margin:1.2rem 0;font-size:.95rem;overflow-x:auto;}
+.formula small{display:block;font-family:var(--body);color:var(--ink3);font-size:.82rem;white-space:normal;margin-top:.4rem}
+
+.note{background:var(--accent-soft);border:1px solid #bcdcd2;border-radius:10px;padding:.9rem 1.2rem;margin:1.2rem 0;font-size:.95rem;color:var(--ink2);}
+.note strong{color:var(--accent)}
+.note.warn{background:#f7e7d5;border-color:#e7c4ab}.note.warn strong{color:var(--bous)}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.4rem;margin:1.6rem 0;box-shadow:0 2px 14px rgba(13,39,43,0.05);}
+.panel-title{font-family:var(--display);font-weight:700;font-size:1.02rem;margin-bottom:.2rem}
+.panel-sub{font-size:.88rem;color:var(--ink3);margin-bottom:1rem}
+
+.sim{display:grid;grid-template-columns:1.5fr 1fr;gap:1.2rem;align-items:start}
+@media(max-width:860px){.sim{grid-template-columns:1fr}}
+.cv-wrap{background:#fff;border:1px solid var(--line);border-radius:10px;padding:.4rem;overflow:hidden}
+canvas{display:block;width:100%;height:auto;border-radius:6px;touch-action:none}
+
+.ctrl{display:flex;flex-direction:column;gap:.25rem;margin-bottom:.7rem}
+.ctrl label{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.ctrl-grid{display:grid;grid-template-columns:1fr 1fr;gap:.3rem 1rem}.ctrl-grid .ctrl{margin-bottom:.4rem}
+
+.btn{font-family:var(--display);font-weight:700;font-size:.9rem;letter-spacing:.02em;padding:.5rem .9rem;border-radius:8px;
+  border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;transition:transform .1s,opacity .2s;}
+.btn:hover{opacity:.92}.btn:active{transform:scale(.97)}.btn.ghost{background:transparent;color:var(--accent)}
+.btn.sm{font-size:.82rem;padding:.4rem .7rem}
+.btn:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--water);outline-offset:2px}
+.btn-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem}
+.toggle-row{display:flex;gap:.4rem;flex-wrap:wrap;margin:.3rem 0 .8rem}
+.tg{font-family:var(--mono);font-size:12px;padding:.4rem .7rem;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink3);cursor:pointer;transition:all .15s}
+.tg.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}
+
+.readouts{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
+.chip{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:.4rem .65rem;color:var(--ink2);}
+.chip b{color:var(--ink);font-weight:600}
+.chip.hot{border-color:var(--bous);background:#f7e7d5}.chip.hot b{color:var(--bous)}
+
+.legend{display:flex;align-items:center;gap:.5rem;margin-top:.6rem;font-family:var(--mono);font-size:11px;color:var(--ink3);flex-wrap:wrap}
+.legend .bar{height:12px;width:160px;border-radius:3px;border:1px solid var(--line)}
+
+table{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.9rem;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th,td{padding:.5rem .7rem;border-bottom:1px solid var(--line);text-align:center;font-family:var(--mono);font-size:.84rem}
+th{background:var(--accent-soft);color:var(--ink);font-family:var(--display);font-weight:700;font-size:.8rem}
+tr:last-child td{border-bottom:none}td.m{text-align:left;font-family:var(--body)}
+
+.quiz-box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.6rem;margin:1.6rem 0}
+.quiz-progress{font-family:var(--mono);font-size:12.5px;color:var(--ink3);margin-bottom:.8rem;display:flex;justify-content:space-between}
+.quiz-q{font-family:var(--display);font-weight:700;font-size:1.12rem;margin-bottom:1.1rem}
+.quiz-opts{display:grid;gap:.6rem}
+.quiz-opt{text-align:left;font-family:var(--body);font-size:.96rem;padding:.75rem 1rem;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;color:var(--ink2);transition:border-color .15s,background .15s;}
+.quiz-opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}.quiz-opt:disabled{cursor:default}
+.quiz-opt.correct{border-color:var(--ok);background:#e2f1e8;color:var(--ink);font-weight:600}
+.quiz-opt.wrong{border-color:var(--danger);background:#f7e3e3;color:var(--ink)}
+.quiz-expl{margin-top:1rem;padding:.9rem 1.1rem;border-radius:10px;background:var(--water-soft);border:1px solid #bcd4ea;font-size:.93rem;color:var(--ink2);display:none}
+.quiz-expl.show{display:block}.quiz-expl b{color:var(--water)}
+.quiz-next{margin-top:1.1rem;display:none}.quiz-next.show{display:inline-block}
+.quiz-result{text-align:center;display:none}.quiz-result.show{display:block}
+.quiz-score{font-family:var(--display);font-weight:900;font-size:3.4rem;color:var(--accent);line-height:1.1}
+.quiz-msg{font-size:1.02rem;color:var(--ink2);margin:.6rem 0 1.4rem}
+.progress-track{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-bottom:1.2rem}
+.progress-fill{height:100%;background:var(--accent);width:0;transition:width .3s}
+
+footer{max-width:1040px;margin:3rem auto 0;padding:2rem 1.5rem 3rem;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink3);font-family:var(--mono);}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
+@media(max-width:600px){section{padding:2.4rem 1.1rem .6rem}header.hero{padding:3rem 1.1rem 2rem}nav{padding:0 .9rem;gap:.9rem}}
+/* Magyar tipográfia — kiegyensúlyozott, olvasható tördelés */
+body{text-wrap:pretty}
+p,li,figcaption,blockquote,dd,.lead,.note,.card p,.panel-sub,.hero-sub,.gauge-caption{text-wrap:pretty;hyphens:none}
+h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
+.formula,.hero-eq,.eq{white-space:nowrap;overflow-x:auto}
+.formula small,.hero-eq small,.eq small{white-space:normal}
+.nowrap{white-space:nowrap}
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-logo">Feszültséghagyma</span>
+  <div class="nav-links">
+    <a class="nav-link" href="#bev">Bevezetés</a>
+    <a class="nav-link" href="#hagyma">A hagyma</a>
+    <a class="nav-link" href="#szuper">Szuperpozíció</a>
+    <a class="nav-link" href="#modszerek">Kögler · Jáky · Kany</a>
+    <a class="nav-link" href="#kviz">Kvíz</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-eyebrow">Talajmechanika · Interaktív segédanyag</div>
+  <h1>Feszültség&shy;hagyma<br><span class="thin">& szuperpozíció</span></h1>
+  <p class="hero-sub">Az alaptest nem csak közvetlenül maga alatt terheli a talajt: a feszültség <strong>oldalirányban szétterül</strong>, és a mélységgel fokozatosan lecseng — ez a <strong>feszültséghagyma</strong>. Ha két alap közel van, a hagymáik <strong>összeadódnak</strong>: a köztük lévő talaj többet kap, és nagyobbat süllyed. Ez a vizuális párja a <a href="https://sikalapok-sullyedesszamitasa.vercel.app/" style="color:var(--accent)">süllyedésszámítási segédletednek</a>.</p>
+  <div class="hero-eq">σ = <span style="color:var(--accent)">σ'</span> &nbsp;·&nbsp; Δσ<sub>z</sub>(x,z) — a teher okozta többletfeszültség
+    <small>A süllyedést csak a teher okozta <strong>Δσ<sub>z</sub> többletfeszültség</strong> okozza. A hagyma ennek a térbeli képe; a süllyedés a Δσ<sub>z</sub> mélység menti összegzése a határmélységig.</small>
+  </div>
+</header>
+
+<main>
+
+<section id="bev" class="reveal">
+  <div class="eyebrow">1 · Miért terjed szét?</div>
+  <h2>A feszültség szétterülése</h2>
+  <p class="lead">Egy <strong>végtelen kiterjedésű</strong> egyenletes teher alatt a feszültség a mélységgel nem változna. De egy <strong>véges</strong> alaptest szélei felől a feszültség oldalirányban is szétterül, így a tengely mentén a mélységgel fokozatosan csökken, és egy idő után gyakorlatilag zérus lesz. Ezt a térbeli eloszlást nevezzük szemléletesen feszültséghagymának (az azonos feszültségű vonalak — az <strong>izobárok</strong> — hagyma alakú burkokat rajzolnak ki).</p>
+  <div class="cards">
+    <div class="card"><h4><span class="dot bous"></span>Izobár</h4><p>Az azonos Δσ<sub>z</sub> feszültségű pontok mértani helye. A 0,1·p izobár az a burok, amelyen belül a feszültség a talpfeszültség 10%-ánál nagyobb.</p></div>
+    <div class="card"><h4><span class="dot accent"></span>Szuperpozíció</h4><p>A talajt lineárisan rugalmasnak tekintve a feszültségek <strong>összeadódnak</strong>: több alaptest hatása az egyedi hagymák egyszerű összege.</p></div>
+    <div class="card"><h4><span class="dot kog"></span>Határmélység</h4><p>Az a mélység, amely alatt a többletfeszültség már nem okoz mérhető süllyedést (n = 5 szabály, vagy a Jáky-féle m<sub>0</sub>).</p></div>
+  </div>
+  <div class="note"><strong>A szuperpozíció a kulcs.</strong> Mivel a feszültség lineárisan adódik össze, egy bonyolult terhelést egyszerű alakokra bonthatunk, és a hatásukat összegezzük. Ugyanezért „érzik meg" egymást a szomszédos alapok — pont ezt teszi láthatóvá az alábbi szimulátor.</p></div>
+</section>
+
+<section id="hagyma" class="reveal">
+  <div class="eyebrow">2 · A fő attrakció</div>
+  <h2>Interaktív feszültséghagyma</h2>
+  <p class="lead">Egy sávalap alatti <strong>Boussinesq-féle</strong> (rugalmasságtani, „pontos") feszültségmező. A színek a Δσ<sub>z</sub>/p arányt mutatják, a fehér vonalak az izobárok. Állítsd a szélességet és a terhelést — figyeld, hogyan nyúlik mélyebbre a hagyma a szélesebb alapnál (azonos talpfeszültség mellett is!).</p>
+  <div class="panel">
+    <div class="sim">
+      <div>
+        <div class="cv-wrap"><canvas id="cv1" width="560" height="380"></canvas></div>
+        <div class="legend"><span>Δσ<sub>z</sub> [kPa]:</span><span>0</span><div class="bar" id="legbar1"></div><span>300</span><span style="margin-left:auto">fehér vonalak = izobárok (kPa)</span></div>
+      </div>
+      <div>
+        <div class="readouts" id="ro1"></div>
+        <div class="ctrl" style="margin-top:1rem"><label>Alapszélesség B <span class="val" id="b1v"></span></label><input type="range" id="b1" min="1" max="6" step="0.5"></div>
+        <div class="ctrl"><label>Talpfeszültség p <span class="val" id="p1v"></span></label><input type="range" id="p1" min="50" max="300" step="10"></div>
+        <div class="ctrl"><label>Vizsgált mélység z <span class="val" id="z1v"></span></label><input type="range" id="z1" min="0.5" max="20" step="0.5"></div>
+        <p style="font-size:.88rem;margin-top:.8rem">A vízszintes szaggatott vonal a vizsgált z mélység; jobbra a tengely menti Δσ<sub>z</sub> érték. A nézet rögzített, így jól látszik: <strong>szélesebb B</strong> mélyebbre nyúló hagymát ad, <strong>nagyobb p</strong> pedig lejjebb tolja az izobárokat és „forróbb" mezőt ad.</p>
+      </div>
+    </div>
+  </div>
+  <div class="note warn"><strong>Ezért veszélyesek a nagy alapok.</strong> Két alaptest azonos talpfeszültséggel, de eltérő szélességgel <em>nem</em> süllyed egyformán: a szélesebb alap hagymája mélyebb rétegeket is megterhel, így összességében nagyobbat süllyed — még akkor is, ha a felszíni feszültség ugyanakkora.</div>
+</section>
+
+<section id="szuper" class="reveal">
+  <div class="eyebrow">3 · Amikor a hagymák összeérnek</div>
+  <h2>Szuperpozíció — a szomszédhatás</h2>
+  <p class="lead">Adj a képhez egy második (és harmadik) alapot, és csökkentsd a köztük lévő hézagot. A feszültségmezők összeadódnak, és a közöttük lévő talajban a Δσ<sub>z</sub> <strong>jóval nagyobb</strong> lehet, mint egyetlen alap alatt — ezért a szomszédos alapok egymás felé <strong>megdőlhetnek</strong>.</p>
+  <div class="panel">
+    <div class="sim">
+      <div>
+        <div class="cv-wrap"><canvas id="cv2" width="560" height="380"></canvas></div>
+        <div class="legend"><span>Δσ<sub>z</sub> [kPa]:</span><span>0</span><div class="bar" id="legbar2"></div><span>300</span><span style="margin-left:auto">összegzett izobárok (kPa)</span></div>
+      </div>
+      <div>
+        <div class="readouts" id="ro2"></div>
+        <div class="ctrl" style="margin-top:1rem"><label>Alapok száma <span class="val" id="n2v"></span></label><input type="range" id="n2" min="1" max="3" step="1"></div>
+        <div class="ctrl"><label>Alapszélesség B <span class="val" id="b2v"></span></label><input type="range" id="b2" min="1" max="4" step="0.5"></div>
+        <div class="ctrl"><label>Hézag az alapok közt <span class="val" id="g2v"></span></label><input type="range" id="g2" min="0.5" max="10" step="0.5"></div>
+        <div class="ctrl"><label>Talpfeszültség p <span class="val" id="p2v"></span></label><input type="range" id="p2" min="50" max="300" step="10"></div>
+        <div class="ctrl"><label>Vizsgált mélység z <span class="val" id="z2v"></span></label><input type="range" id="z2" min="0.5" max="20" step="0.5"></div>
+      </div>
+    </div>
+  </div>
+  <div class="note"><strong>Próbáld ki:</strong> tedd két alapra (n = 2), és csökkentsd a hézagot 0,5 m-re — a chip megmutatja, hány %-kal több terhet kap a szélső alap tengelye a szomszéd miatt. Növeld a hézagot: nagy távolságnál a felerősödés eltűnik, mert a hagymák már nem érnek össze.</div>
+</section>
+
+<section id="modszerek" class="reveal">
+  <div class="eyebrow">4 · A gyakorlati közelítések</div>
+  <h2>Kögler, Jáky és Kany — egy ábrán</h2>
+  <p class="lead">A süllyedésszámításhoz a „pontos" Boussinesq helyett a gyakorlatban közelítő, függőleges feszültségeloszlásokat használunk. Itt mind a négy görbe egy ábrán látszik: a Boussinesq-tengely (a hagyma magja) és a három közelítés a <strong>tengely menti σ<sub>z</sub>/p</strong> a mélység (z/B) függvényében.</p>
+  <div class="panel">
+    <div class="sim">
+      <div>
+        <div class="cv-wrap" style="background:#fff;padding:.6rem"><svg id="cmpSvg" viewBox="0 0 560 400" role="img" aria-label="A három módszer összevetése"></svg></div>
+      </div>
+      <div>
+        <div class="toggle-row" id="mToggles">
+          <button class="tg on" data-m="bous">Boussinesq</button>
+          <button class="tg on" data-m="kog">Kögler</button>
+          <button class="tg on" data-m="jak">Jáky</button>
+          <button class="tg on" data-m="kany">Kany</button>
+        </div>
+        <div class="ctrl"><label>Kögler-szög α <span class="val" id="kaV"></span></label><input type="range" id="ka" min="30" max="60" step="5"></div>
+        <p style="font-size:.9rem;margin-top:.6rem">A görbe alatti terület (a határmélységig) arányos a süllyedéssel. Bár a módszerek a felszín közelében eltérnek, az integráljuk hasonló nagyságrendű.</p>
+      </div>
+    </div>
+  </div>
+  <table>
+    <thead><tr><th>Módszer</th><th>Eloszlás</th><th>Határmélység</th><th>Jelleg</th></tr></thead>
+    <tbody>
+      <tr><td class="m" style="color:var(--bous)"><b>Boussinesq</b></td><td>rugalmasságtani, pontos</td><td>n = 5 szabály</td><td class="m">referencia, „valódi" hagyma</td></tr>
+      <tr><td class="m" style="color:var(--kog)"><b>Kögler</b></td><td>α-szögű, tartományon belül egyenletes</td><td>nincs (n=5)</td><td class="m">durva, gyors; a csúcsot „elkeni"</td></tr>
+      <tr><td class="m" style="color:var(--jak)"><b>Jáky</b></td><td>háromszög (lineáris)</td><td>m<sub>0</sub>=2B·(1−B/2L)</td><td class="m">fejben számolható, népszerű</td></tr>
+      <tr><td class="m" style="color:var(--kany)"><b>Kany</b></td><td>karakterisztikus pont, táblázat</td><td>n = 5 szabály</td><td class="m">pontos, lamellás számításhoz</td></tr>
+    </tbody>
+  </table>
+  <div class="note"><strong>Megjegyzés:</strong> a Boussinesq- és Kögler/Jáky-görbe a <strong>tengely</strong> (középvonal) menti feszültség, a Kany viszont a <strong>karakterisztikus pont</strong> alatti — ezért fut a Kany kicsivel a Boussinesq-tengely alatt. A részletes, lépésenkénti levezetést és a kalkulátorokat lásd a süllyedésszámítási segédletedben.</div>
+</section>
+
+<section id="kviz" class="reveal">
+  <div class="eyebrow">5 · Tudáspróba</div>
+  <h2>Kvíz — 12 kérdés</h2>
+  <p class="lead">Kevert sorrend, magyarázatokkal.</p>
+  <div class="quiz-box">
+    <div id="quizMain">
+      <div class="progress-track"><div class="progress-fill" id="qProg"></div></div>
+      <div class="quiz-progress"><span id="qCount">1 / 12</span><span id="qScoreLive">Pont: 0</span></div>
+      <div class="quiz-q" id="qText"></div>
+      <div class="quiz-opts" id="qOpts"></div>
+      <div class="quiz-expl" id="qExpl"></div>
+      <button class="btn quiz-next" id="qNext">Következő →</button>
+    </div>
+    <div class="quiz-result" id="quizResult">
+      <div class="quiz-score" id="qFinal">0 / 12</div>
+      <div class="quiz-msg" id="qMsg"></div>
+      <button class="btn" id="qRestart">↺ Újrakezdés</button>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>
+  Feszültséghagyma & szuperpozíció · interaktív tananyag · Talajmechanika · A süllyedésszámítási segédlet vizuális kiegészítője. A Boussinesq-mező szemléltető (sávalap, homogén rugalmas féltér); tervezésre az MSZ EN 1997 (EC7) és a részletes számítási eljárás irányadó.
+</footer>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+
+/* ───────── Boussinesq sávteher ───────── */
+function stripSigma(x,z,xL,xR,p){
+  if(z<=0.0001)return (x>=xL&&x<=xR)?p:0;
+  const a1=Math.atan2(x-xL,z),a2=Math.atan2(x-xR,z),beta=a1-a2;
+  return (p/Math.PI)*(beta+Math.sin(beta)*Math.cos(a1+a2));
+}
+function fieldAt(x,z,founds){let s=0;for(const f of founds)s+=stripSigma(x,z,f.xL,f.xR,f.p);return s;}
+
+/* színskála: 0 → talajszín, növekvő → sárga→narancs→rozsda→sötétvörös */
+function ramp(t){ // t in 0..1 (Δσ/pmax)
+  t=Math.max(0,Math.min(1,t));
+  const stops=[[227,217,198],[245,225,150],[238,159,39],[200,82,31],[120,28,18]];
+  const seg=t*(stops.length-1),i=Math.floor(seg),f=seg-i;
+  if(i>=stops.length-1)return stops[stops.length-1];
+  const a=stops[i],b=stops[i+1];
+  return [Math.round(a[0]+(b[0]-a[0])*f),Math.round(a[1]+(b[1]-a[1])*f),Math.round(a[2]+(b[2]-a[2])*f)];
+}
+function legendCSS(){
+  let s='linear-gradient(90deg,';const N=8;
+  for(let i=0;i<=N;i++){const c=ramp(i/N);s+='rgb('+c[0]+','+c[1]+','+c[2]+')'+(i<N?',':'');}
+  return s+')';
+}
+
+const CMAX=300;                              /* a színskála teteje [kPa] */
+const ISO_KPA=[10,25,50,75,100,150,200,250]; /* abszolút izobár-szintek [kPa] */
+
+/* általános mezőrajzoló: canvas + alaptestek + izobárok + tengelyek
+   getView(founds) → {xmin,xmax,Zmax}  — RÖGZÍTETT (nem skálázódik a teherrel) */
+function makeSim(cvId,getFounds,getZ,getView){
+  const cv=$(cvId),ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height;
+  const mTop=28,mBot=24,mL=38,mR=14;
+  const plotW=W-mL-mR,plotH=H-mTop-mBot;
+  const GW=224,GH=152;
+  const off=document.createElement('canvas');off.width=GW;off.height=GH;
+  const octx=off.getContext('2d');
+  function draw(){
+    const founds=getFounds();
+    const v=getView(founds);
+    const xmin=v.xmin,xmax=v.xmax,Zmax=v.Zmax;
+    const cx=(Math.min(...founds.map(f=>f.xL))+Math.max(...founds.map(f=>f.xR)))/2;
+    const pmax=Math.max(...founds.map(f=>f.p));
+    // mező az offscreen rácsra — ABSZOLÚT színezés (s/CMAX)
+    const img=octx.createImageData(GW,GH);
+    for(let j=0;j<GH;j++){
+      const z=(j+0.5)/GH*Zmax;
+      for(let i=0;i<GW;i++){
+        const x=xmin+(i+0.5)/GW*(xmax-xmin);
+        const s=fieldAt(x,z,founds);
+        const c=ramp(s/CMAX);
+        const k=(j*GW+i)*4;
+        img.data[k]=c[0];img.data[k+1]=c[1];img.data[k+2]=c[2];img.data[k+3]=255;
+      }
+    }
+    octx.putImageData(img,0,0);
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+    ctx.imageSmoothingEnabled=true;
+    ctx.drawImage(off,mL,mTop,plotW,plotH);
+    const SX=x=>mL+(x-xmin)/(xmax-xmin)*plotW;
+    const SZ=z=>mTop+z/Zmax*plotH;
+    drawIsobars(ctx,founds,pmax,xmin,xmax,Zmax,SX,SZ);
+    // alaptestek a felszínen
+    founds.forEach(f=>{
+      const x0=SX(f.xL),x1=SX(f.xR);
+      ctx.fillStyle='#34514f';ctx.fillRect(x0,mTop-7,Math.max(2,x1-x0),7);
+      ctx.fillStyle='#0d272b';ctx.font='600 11px JetBrains Mono';ctx.textAlign='center';
+      ctx.fillText('p',(x0+x1)/2,mTop-9);
+    });
+    ctx.strokeStyle='#b9a888';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(mL,mTop);ctx.lineTo(W-mR,mTop);ctx.stroke();
+    // vizsgált z vonal
+    const z=getZ();
+    if(z>0&&z<Zmax){
+      const zy=SZ(z);
+      ctx.strokeStyle='#0d272b';ctx.lineWidth=1.2;ctx.setLineDash([5,4]);
+      ctx.beginPath();ctx.moveTo(mL,zy);ctx.lineTo(W-mR,zy);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#0d272b';ctx.font='600 10px JetBrains Mono';ctx.textAlign='right';
+      ctx.fillText('z='+z.toFixed(1)+'m',W-mR-2,zy-3);
+    }
+    // mélységskála
+    ctx.fillStyle='#64807d';ctx.font='9px JetBrains Mono';ctx.textAlign='right';
+    const zstep=Math.ceil(Zmax/6);
+    for(let zz=0;zz<=Zmax;zz+=zstep){ctx.fillText(zz+'m',mL-3,SZ(zz)+3);}
+    ctx.save();ctx.translate(10,mTop+plotH/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.fillText('mélység z',0,0);ctx.restore();
+    return {founds,cx,Zmax,pmax};
+  }
+  return draw;
+}
+
+/* izobár-kontúrok marching squares-szel — ABSZOLÚT kPa szintek */
+function drawIsobars(ctx,founds,pmax,xmin,xmax,Zmax,SX,SZ){
+  const GW=120,GH=90;
+  const grid=[];
+  for(let j=0;j<=GH;j++){grid[j]=[];for(let i=0;i<=GW;i++){
+    const x=xmin+i/GW*(xmax-xmin),z=j/GH*Zmax;
+    grid[j][i]=fieldAt(x,z,founds);   // abszolút kPa
+  }}
+  ctx.lineWidth=1;ctx.strokeStyle='rgba(255,255,255,0.8)';
+  ctx.font='9px JetBrains Mono';ctx.textAlign='center';
+  const levels=ISO_KPA.filter(L=>L<pmax*0.99);
+  for(const lev of levels){
+    ctx.beginPath();
+    for(let j=0;j<GH;j++)for(let i=0;i<GW;i++){
+      const x0=xmin+i/GW*(xmax-xmin),x1=xmin+(i+1)/GW*(xmax-xmin);
+      const z0=j/GH*Zmax,z1=(j+1)/GH*Zmax;
+      const a=grid[j][i],b=grid[j][i+1],c=grid[j+1][i+1],d=grid[j+1][i];
+      const pts=[];
+      const ip=(va,vb,pa,pb)=>{const t=(lev-va)/(vb-va);return [pa[0]+(pb[0]-pa[0])*t,pa[1]+(pb[1]-pa[1])*t];};
+      const TL=[SX(x0),SZ(z0)],TR=[SX(x1),SZ(z0)],BR=[SX(x1),SZ(z1)],BL=[SX(x0),SZ(z1)];
+      if((a>=lev)!=(b>=lev))pts.push(ip(a,b,TL,TR));
+      if((b>=lev)!=(c>=lev))pts.push(ip(b,c,TR,BR));
+      if((c>=lev)!=(d>=lev))pts.push(ip(c,d,BR,BL));
+      if((d>=lev)!=(a>=lev))pts.push(ip(d,a,BL,TL));
+      if(pts.length>=2){ctx.moveTo(pts[0][0],pts[0][1]);ctx.lineTo(pts[1][0],pts[1][1]);}
+    }
+    ctx.stroke();
+  }
+  // címkék: a középvonalon hol metszi az izobár
+  const cx=(xmin+xmax)/2;
+  ctx.fillStyle='rgba(255,255,255,0.95)';
+  for(const lev of levels){
+    let zf=null;
+    for(let z=0.05;z<Zmax;z+=0.04){if(fieldAt(cx,z,founds)<lev){zf=z;break;}}
+    if(zf&&zf>0.1){ctx.fillText(lev+' kPa',SX(cx),SZ(zf)+10);}
+  }
+}
+
+/* ───────── 1. HAGYMA ───────── */
+$("legbar1").style.background=legendCSS();
+$("legbar2").style.background=legendCSS();
+const S1={B:3,p:180,z:4};
+const draw1=makeSim('cv1',()=>[{xL:-S1.B/2,xR:S1.B/2,p:S1.p}],()=>S1.z,
+  ()=>({xmin:-10,xmax:10,Zmax:18}));
+function up1(){
+  $("b1v").textContent=S1.B.toFixed(1)+' m';$("p1v").textContent=S1.p+' kPa';$("z1v").textContent=S1.z.toFixed(1)+' m';
+  const r=draw1();
+  const sc=fieldAt(0,S1.z,r.founds);
+  $("ro1").innerHTML='<div class="chip hot">Tengelyen z-nél <b>Δσz = '+sc.toFixed(1)+' kPa</b></div>'+
+    '<div class="chip">= a talpfeszültség <b>'+(sc/S1.p*100).toFixed(0)+'%</b>-a</div>';
+}
+[['b1','B'],['p1','p'],['z1','z']].forEach(([id,k])=>$(id).addEventListener('input',()=>{S1[k]=parseFloat($(id).value);up1();}));
+$("b1").value=S1.B;$("p1").value=S1.p;$("z1").value=S1.z;up1();
+
+/* ───────── 2. SZUPERPOZÍCIÓ ───────── */
+const S2={n:2,B:2,g:1.5,p:180,z:4};
+function founds2(){
+  const a=[];const total=S2.n*S2.B+(S2.n-1)*S2.g;const start=-total/2;
+  for(let i=0;i<S2.n;i++){const xL=start+i*(S2.B+S2.g);a.push({xL,xR:xL+S2.B,p:S2.p});}
+  return a;
+}
+const draw2=makeSim('cv2',founds2,()=>S2.z,
+  (founds)=>{
+    const xL=Math.min(...founds.map(f=>f.xL)), xR=Math.max(...founds.map(f=>f.xR));
+    const cx=(xL+xR)/2, half=Math.max((xR-xL)/2+3, 8);
+    return {xmin:cx-half,xmax:cx+half,Zmax:18};
+  });
+function up2(){
+  $("n2v").textContent=S2.n;$("b2v").textContent=S2.B.toFixed(1)+' m';$("g2v").textContent=S2.g.toFixed(1)+' m';
+  $("p2v").textContent=S2.p+' kPa';$("z2v").textContent=S2.z.toFixed(1)+' m';
+  const r=draw2();
+  const fs=founds2();
+  const midAll=fieldAt(0,S2.z,fs);
+  let html='<div class="chip hot">Középen z-nél <b>Δσz = '+midAll.toFixed(1)+' kPa</b></div>';
+  if(S2.n>1){
+    const xc1=(fs[0].xL+fs[0].xR)/2;
+    const alone=stripSigma(xc1,S2.z,fs[0].xL,fs[0].xR,S2.p);
+    const withN=fieldAt(xc1,S2.z,fs);
+    const amp=alone>0.01?(withN/alone-1)*100:0;
+    html+='<div class="chip">Szélső alap tengelyén a szomszéd(ok) <b>+'+amp.toFixed(0)+'%</b> terhet adnak</div>';
+  }
+  $("ro2").innerHTML=html;
+}
+[['n2','n'],['b2','B'],['g2','g'],['p2','p'],['z2','z']].forEach(([id,k])=>$(id).addEventListener('input',()=>{S2[k]=parseFloat($(id).value);up2();}));
+$("n2").value=S2.n;$("b2").value=S2.B;$("g2").value=S2.g;$("p2").value=S2.p;$("z2").value=S2.z;up2();
+
+/* ───────── 3. MÓDSZER-ÖSSZEVETÉS (SVG) ───────── */
+const KANY_Z=[0,0.05,0.10,0.20,0.30,0.40,0.50,0.60,0.80,1.00,1.50,2.00,3.00,4.00,5.00,6.00,7.00,8.00,10.0,15.0,20.0];
+const KANY_STRIP=[1.000,0.990,0.945,0.826,0.739,0.677,0.630,0.590,0.524,0.467,0.360,0.288,0.203,0.155,0.125,0.113,0.100,0.088,0.063,0.050,0.032];
+function kany(zb){if(zb<=0)return 1;if(zb>=20)return 0.032*20/zb;for(let i=1;i<KANY_Z.length;i++){if(zb<=KANY_Z[i]){const t=(zb-KANY_Z[i-1])/(KANY_Z[i]-KANY_Z[i-1]);return KANY_STRIP[i-1]+t*(KANY_STRIP[i]-KANY_STRIP[i-1]);}}return 0;}
+function bous(zb){const al=Math.atan(1/(2*zb));return (1/Math.PI)*(2*al+Math.sin(2*al));}
+function kogler(zb,aDeg){return 1/(1+2*zb*Math.tan(aDeg*Math.PI/180));}
+function jaky(zb){return zb<2?(1-zb/2):0;}
+const mOn={bous:true,kog:true,jak:true,kany:true};
+let kAlpha=45;
+function drawCmp(){
+  const svg=$("cmpSvg");
+  const px={x0:52,x1:540,y0:24,y1:356};
+  const zbMax=4;
+  const X=v=>px.x0+v*(px.x1-px.x0); // v=σz/p (0..1)
+  const Y=zb=>px.y0+zb/zbMax*(px.y1-px.y0);
+  let g='';
+  // rács
+  [0,0.2,0.4,0.6,0.8,1].forEach(v=>{g+='<line x1="'+X(v)+'" y1="'+px.y0+'" x2="'+X(v)+'" y2="'+px.y1+'" stroke="#e4ebe9"/><text x="'+X(v)+'" y="'+(px.y1+16)+'" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#64807d">'+v.toFixed(1)+'</text>';});
+  [0,1,2,3,4].forEach(zb=>{g+='<line x1="'+px.x0+'" y1="'+Y(zb)+'" x2="'+px.x1+'" y2="'+Y(zb)+'" stroke="#e4ebe9"/><text x="'+(px.x0-6)+'" y="'+(Y(zb)+4)+'" text-anchor="end" font-family="JetBrains Mono" font-size="10" fill="#64807d">'+zb+'</text>';});
+  function curve(fn,col,dash){let d='';for(let i=0;i<=100;i++){const zb=zbMax*i/100;const v=Math.max(0,fn(zb));d+=(i?' L':'M')+X(v).toFixed(1)+' '+Y(zb).toFixed(1);}return '<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="2.4" '+(dash?'stroke-dasharray="'+dash+'" ':'')+'stroke-linecap="round"/>';}
+  if(mOn.bous)g+=curve(bous,'#c2521f');
+  if(mOn.kog)g+=curve(zb=>kogler(zb,kAlpha),'#1b6fae','6 4');
+  if(mOn.jak)g+=curve(jaky,'#0e7c6b','2 4');
+  if(mOn.kany)g+=curve(kany,'#9a3fb0');
+  // tengelyek
+  g+='<line x1="'+px.x0+'" y1="'+px.y0+'" x2="'+px.x0+'" y2="'+px.y1+'" stroke="#0d272b" stroke-width="1.4"/>';
+  g+='<line x1="'+px.x0+'" y1="'+px.y0+'" x2="'+px.x1+'" y2="'+px.y0+'" stroke="#0d272b" stroke-width="1.4"/>';
+  g+='<text x="'+((px.x0+px.x1)/2)+'" y="'+(px.y1+34)+'" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#64807d">σz / p  (tengely menti)</text>';
+  g+='<text x="16" y="'+((px.y0+px.y1)/2)+'" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#64807d" transform="rotate(-90 16 '+((px.y0+px.y1)/2)+')">mélység z / B</text>';
+  svg.innerHTML=g;
+}
+document.querySelectorAll('#mToggles .tg').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m;mOn[m]=!mOn[m];b.classList.toggle('on',mOn[m]);drawCmp();}));
+$("ka").addEventListener('input',()=>{kAlpha=parseFloat($("ka").value);$("kaV").textContent=kAlpha+'°';drawCmp();});
+$("ka").value=kAlpha;$("kaV").textContent=kAlpha+'°';drawCmp();
+
+/* ───────── NAV + REVEAL ───────── */
+(function(){
+  const links=[...document.querySelectorAll('.nav-link')];
+  if(typeof IntersectionObserver==='undefined'){document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));return;}
+  const secs=links.map(l=>document.querySelector(l.getAttribute('href'))).filter(Boolean);
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+e.target.id));}),{rootMargin:'-30% 0px -60% 0px'});
+  secs.forEach(s=>io.observe(s));
+  const rio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target);}}),{threshold:0.05});
+  document.querySelectorAll('.reveal').forEach(el=>rio.observe(el));
+})();
+
+/* ───────── KVÍZ ───────── */
+(function(){
+  const Q=[
+    {q:"Mit nevezünk feszültséghagymának?",o:["A talajvíz áramlási képét","A teher okozta többletfeszültség térbeli eloszlását az alaptest alatt","A talaj szemcseösszetételét","A süllyedés időbeli lefolyását"],c:1,e:"A feszültséghagyma a Δσz többletfeszültség térbeli képe — az azonos feszültségű izobárok hagyma alakú burkokat rajzolnak."},
+    {q:"A süllyedést a talajban melyik feszültség okozza?",o:["A teljes feszültség","A geosztatikus (önsúly-) feszültség","A teher okozta Δσz többletfeszültség","A pórusvíznyomás"],c:2,e:"Csak a teher okozta többletfeszültség (Δσz, p0) okoz süllyedést — az önsúly-feszültség alatt a talaj már konszolidálódott."},
+    {q:"Miért terjed szét a feszültség oldalirányban egy véges alaptest alatt?",o:["A talajvíz miatt","Mert az alaptest véges kiterjedésű, így a szélek felől szétterül","A hőtágulás miatt","A kohézió miatt"],c:1,e:"Végtelen teher alatt a feszültség mélységgel állandó; véges alaptest szélei felől viszont szétterül, ezért a tengelyen a mélységgel csökken."},
+    {q:"Mi a szuperpozíció elve a feszültségszámításban?",o:["A feszültségek kioltják egymást","A lineárisan rugalmas talajban a feszültségek összeadódnak","A legnagyobb feszültség számít csak","A feszültség a mélységgel nő"],c:1,e:"Lineárisan rugalmas közegben több teher hatása az egyedi hatások összege — ezért bonthatunk bonyolult terhet egyszerű alakokra."},
+    {q:"Két közeli alaptest között a feszültség az egyedülálló esethez képest:",o:["Kisebb","Nagyobb (a hagymák összeadódnak)","Ugyanakkora","Mindig zérus"],c:1,e:"A szuperpozíció miatt a köztük lévő talaj mindkét alaptól kap terhet, így a Δσz nagyobb — ezért dőlhetnek egymás felé a szomszédos alapok."},
+    {q:"Azonos talpfeszültség mellett a szélesebb alaptest hagymája:",o:["Sekélyebb","Mélyebbre nyúlik le","Ugyanolyan mély","Nem alakul ki"],c:1,e:"A hagyma a B-vel skálázódik: kétszer szélesebb alap kétszer mélyebbre viszi le ugyanazt az izobárt — ezért süllyed nagyobbat azonos talpfeszültségnél is."},
+    {q:"Mit feltételez a Kögler-módszer a feszültségről a szétterülő tartományon belül?",o:["Háromszög-eloszlást","Egyenletes (konstans) feszültséget","Parabolikus eloszlást","Zérus feszültséget"],c:1,e:"Kögler az α-szögben szétterülő tartományon belül egyenletes feszültséget tételez fel — gyors, de durva közelítés, a középvonali csúcsot „elkeni”."},
+    {q:"Milyen feszültségeloszlású a Jáky-módszer?",o:["Egyenletes","Háromszög (lineárisan csökkenő a határmélységig)","Parabolikus","Lépcsős"],c:1,e:"A Jáky-eljárás háromszög-eloszlású: a feszültség az alapsíktól a m0 határmélységig lineárisan csökken zérusra — ezért fejben is számolható."},
+    {q:"Mi a Jáky-féle határmélység sávalapra?",o:["m0 = B","m0 = 2B","m0 = 5B","végtelen"],c:1,e:"Sávalapra (L→∞) m0 = 2B; négyzetes pilléralapra m0 = B; általánosan m0 = 2B·(1−B/2L)."},
+    {q:"Miért a karakterisztikus pont alatt számolunk a Kany-módszerben?",o:["Mert ott a legnagyobb a feszültség","Mert ott a feszültség a hajlékony és a merev alap átlagos süllyedésének egyaránt megfelel","Mert ott zérus a feszültség","Véletlenszerűen választott pont"],c:1,e:"A karakterisztikus pont (≈0,37·B a saroktól) alatti süllyedés egyaránt megfelel a hajlékony és a merev alap átlagos süllyedésének."},
+    {q:"Melyik módszer adja a tengely mentén a legnagyobb feszültséget a felszín közelében?",o:["Kögler","A Boussinesq-tengely (a hagyma magja)","Jáky","Mind egyforma"],c:1,e:"A Boussinesq középvonal a hagyma csúcsa — a közelítő módszerek (főleg Kögler) ezt a felszín közelében alulbecsülik."},
+    {q:"Mi a határmélység szerepe a süllyedésszámításban?",o:["A talajvízszintet jelöli","Az a mélység, amely alatt a többletfeszültség már nem okoz mérhető süllyedést","Az alapsík mélysége","A fagyhatár"],c:1,e:"A σz(z) görbe csak z→∞-nél lenne zérus, így az integrál végtelen lenne; a határmélység (n=5 vagy Jáky m0) zárja le az összegzést."}
+  ];
+  let order=[],idx=0,score=0;
+  function sh(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  function start(){order=sh([...Q.keys()]);idx=0;score=0;$("quizResult").classList.remove('show');$("quizMain").style.display='block';show();}
+  function show(){
+    const q=Q[order[idx]];
+    $("qCount").textContent=(idx+1)+" / "+Q.length;$("qScoreLive").textContent="Pont: "+score;
+    $("qProg").style.width=(idx/Q.length*100)+"%";$("qText").textContent=q.q;
+    $("qExpl").classList.remove('show');$("qNext").classList.remove('show');
+    const opts=sh(q.o.map((t,i)=>({t,ok:i===q.c})));
+    $("qOpts").innerHTML="";
+    opts.forEach(o=>{const b=document.createElement('button');b.className='quiz-opt';b.textContent=o.t;b.dataset.ok=o.ok?"1":"0";
+      b.addEventListener('click',()=>{[...$("qOpts").children].forEach(x=>x.disabled=true);
+        if(o.ok){b.classList.add('correct');score++;}else{b.classList.add('wrong');[...$("qOpts").children].find(x=>x.dataset.ok==="1").classList.add('correct');}
+        $("qScoreLive").textContent="Pont: "+score;$("qExpl").innerHTML="<b>Magyarázat:</b> "+q.e;$("qExpl").classList.add('show');
+        $("qNext").classList.add('show');$("qNext").textContent=idx<Q.length-1?"Következő →":"Eredmény →";});
+      $("qOpts").appendChild(b);});
+  }
+  $("qNext").addEventListener('click',()=>{idx++;if(idx<Q.length)show();else{
+    $("quizMain").style.display='none';$("quizResult").classList.add('show');$("qFinal").textContent=score+" / "+Q.length;
+    const r=score/Q.length;
+    $("qMsg").textContent=r>=0.9?"Kiváló! A feszültséghagyma és a szuperpozíció a kisujjadban van.":r>=0.7?"Szép munka! Pár részlet még csiszolható — nézd át a módszer-összevetést.":r>=0.5?"Jó alap. Játssz még a hagyma- és szuperpozíció-szimulátorral.":"Görgess vissza, és próbáld újra — a vizualizációk sokat segítenek!";}});
+  $("qRestart").addEventListener('click',start);
+  start();
+})();
+
+})();
+</script>
+<script>
+/* Magyar tipográfia — automatikus sortörés-szabályok */
+(function(){
+  "use strict";
+  var NBSP=' ', WJ='⁠';
+  function fix(s){
+    s=s.replace(/([.!?…][)"'»”’]?\s+\S+) (?=\S)/g,'$1'+NBSP);
+    s=s.replace(/(^|[\s(„"'«»–—])(a|az|s|e|é|és|is) (?=\S)/gi,'$1$2'+NBSP);
+    s=s.replace(/ (?=[=+−·×<>≈≥≤≠\/])/g,NBSP);
+    s=s.replace(/([=+−·×<>≈≥≤≠\/]) /g,'$1'+NBSP);
+    s=s.replace(/(\d) (?=(?:kPa|MPa|GPa|kN\/m³|kN\/m²|kN\/m|kN|m³|m²|m\/s|cm|mm|km|kg|°C|°|%|m|t|óra|nap|hét|hónap|év)(?:[\s.,;:!?)\]–—]|$))/g,'$1'+NBSP);
+    s=s.replace(/([0-9A-Za-zÀ-ſ])([\-–—])([0-9A-Za-zÀ-ſ])/g,'$1'+WJ+'$2'+WJ+'$3');
+    return s;
+  }
+  var SKIP={SCRIPT:1,STYLE:1,CODE:1,PRE:1,KBD:1,SAMP:1,INPUT:1,TEXTAREA:1,SELECT:1,OPTION:1,NOSCRIPT:1};
+  function walk(el){ if(!el)return;
+    for(var n=el.firstChild;n;n=n.nextSibling){
+      if(n.nodeType===3){ var t=n.nodeValue; if(t&&/\S/.test(t)){ var nt=fix(t); if(nt!==t)n.nodeValue=nt; } }
+      else if(n.nodeType===1){ var tag=n.tagName?n.tagName.toUpperCase():''; if(SKIP[tag])continue;
+        if(n.namespaceURI==='http://www.w3.org/2000/svg')continue;
+        if(n.classList&&n.classList.contains('nowrap'))continue; walk(n); }
+    }
+  }
+  function across(root){ if(!root||!document.createTreeWalker)return; /* keresztelemes árva-megkötés */
+    var SHORT=/(^|[\s„"'(»–—])(a|az|s|e|é|és|is) $/i, w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null), arr=[], x;
+    while(x=w.nextNode()){var p=x.parentNode,sk=false;while(p&&p.nodeType===1){var tg=p.tagName?p.tagName.toUpperCase():'';if(SKIP[tg]||p.namespaceURI==='http://www.w3.org/2000/svg'){sk=true;break;}p=p.parentNode;}if(!sk&&/\S/.test(x.nodeValue))arr.push(x);}
+    for(var i=0;i<arr.length-1;i++){var v=arr[i].nodeValue;if(SHORT.test(v)){var nv=arr[i+1].nodeValue;if(/^[^\s]/.test(nv))arr[i].nodeValue=v.replace(/ $/,NBSP);else if(/^ /.test(nv)){arr[i].nodeValue=v.replace(/ $/,NBSP);arr[i+1].nodeValue=nv.replace(/^ +/,'');}}}
+  }
+  function typo(el){ el=el||document.body; if(!el)return; walk(el); across(el); }
+  window.__typo=typo;
+  function run(){ typo(document.body); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run); else run();
+  /* dinamikusan frissülő tartalom újrakötése (kvíz) — a fix() idempotens */
+  setInterval(function(){ ['qText','qOpts','qExpl','quizResult'].forEach(function(id){var el=document.getElementById(id); if(el)typo(el);}); },400);
+})();
+</script>
+</body>
+</html>
