@@ -186,7 +186,6 @@ h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
     <a class="nav-link" href="#szuper">Szuperpozíció</a>
     <a class="nav-link" href="#film">Építkezés-film</a>
     <a class="nav-link" href="#lemez">Lemezalap</a>
-    <a class="nav-link" href="#modszerek">Kögler · Jáky · Kany</a>
     <a class="nav-link" href="#kviz">Kvíz</a>
     <a class="nav-link" href="#konv">Konvenciók</a>
   </div>
@@ -197,7 +196,7 @@ h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
     <div class="hero-eyebrow">Talaj és szerkezet kölcsönhatás · Interaktív segédanyag</div>
     <h1>Feszültség&shy;hagyma,<br><span class="thin">szuperpozíció & lemezalap</span></h1>
     <p class="hero-sub">Az alaptest nem csak közvetlenül maga alatt terheli a talajt: a feszültség <strong>oldalirányban szétterül</strong>, és a mélységgel fokozatosan lecseng — ez a <strong>feszültséghagyma</strong>. Ha több alap épül egymás mellé, a hagymáik <strong>összeadódnak</strong>, és a sorrend sem mindegy: a később épülő ház a régit is megsüllyeszti. A nagy <strong>lemezalapnál</strong> pedig már az alap merevsége dönti el, hogyan oszlik meg a talpfeszültség. Ez a vizuális párja a <a href="https://sikalapok-sullyedesszamitasa.vercel.app/" target="_blank" rel="noopener">süllyedésszámítási segédletnek</a>.</p>
-    <div class="hero-stats"><span><b>5</b> interaktív szimulátor</span><span><b>4</b> épület, építési sorrenddel</span><span><b>3</b> szabadon állítható függőleges</span><span><b>20</b> kvízkérdés</span></div>
+    <div class="hero-stats"><span><b>4</b> interaktív szimulátor</span><span><b>4</b> épület, építési sorrenddel</span><span><b>3</b> szabadon állítható függőleges</span><span><b>15</b> kvízkérdés</span></div>
     <div class="hero-eq">Δσ<sub>z</sub>(x, z) = Σ<sub>i</sub> Δσ<sub>z,i</sub>(x, z) &nbsp;→&nbsp; s(x) = ∫<sub>0</sub><sup>m₀</sup> Δσ<sub>z</sub>/E<sub>oed</sub> dz
       <small>A süllyedést csak a teher okozta <strong>Δσ<sub>z</sub> többletfeszültség</strong> okozza. Lineárisan rugalmas talajban a több alapból származó feszültségek pontról pontra <strong>összeadódnak</strong>, a süllyedés pedig a többletfeszültség mélység menti összegzése a határmélységig.</small>
     </div>
@@ -368,42 +367,10 @@ h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
   <div class="note warn"><strong>Határmélység nagy lemeznél.</strong> Az n = 5 szabály (Δσ<sub>z</sub> = σ<sub>g</sub>/5; a német DIN 4019 ugyanezt 20 %-os kritériumként írja) széles lemeznél a szélesség 0,7–2-szeresének megfelelő mélységet ad (minél szélesebb a lemez, annál kisebb a B-hez viszonyított érték, mert a geosztatikus feszültség is nő), a Jáky-képlet sávszerű lemezre m<sub>0</sub> = 2B-t. Egy 30 m-es lemeznél ez 30–60 m: a mély rétegek merevsége és egy esetleges kemény réteg (kőzet) helye dönti el a süllyedést — kis alapnál ugyanezek a rétegek szóba sem jönnek.</div>
 </section>
 
-<section id="modszerek" class="reveal">
-  <div class="eyebrow">6 · A gyakorlati közelítések</div>
-  <h2>Kögler, Jáky és Kany — egy ábrán</h2>
-  <p class="lead">A süllyedésszámításhoz a „pontos" Boussinesq helyett a gyakorlatban közelítő, függőleges feszültségeloszlásokat használunk. Itt mind a négy görbe egy ábrán látszik: a Boussinesq-tengely (a hagyma magja) és a három közelítés a <strong>tengely menti σ<sub>z</sub>/p</strong> a mélység (z/B) függvényében.</p>
-  <div class="panel">
-    <div class="sim">
-      <div>
-        <div class="cv-wrap" style="background:#fff;padding:.6rem"><svg id="cmpSvg" viewBox="0 0 560 400" role="img" aria-label="A három módszer összevetése"></svg></div>
-      </div>
-      <div>
-        <div class="toggle-row" id="mToggles">
-          <button class="tg on" data-m="bous">Boussinesq</button>
-          <button class="tg on" data-m="kog">Kögler</button>
-          <button class="tg on" data-m="jak">Jáky</button>
-          <button class="tg on" data-m="kany">Kany</button>
-        </div>
-        <div class="ctrl"><label>Kögler-szög α <span class="val" id="kaV"></span></label><input type="range" id="ka" min="30" max="60" step="5"></div>
-        <p style="font-size:.9rem;margin-top:.6rem">A görbe alatti terület (a határmélységig) arányos a süllyedéssel. Bár a módszerek a felszín közelében eltérnek, az integráljuk hasonló nagyságrendű.</p>
-      </div>
-    </div>
-  </div>
-  <table>
-    <thead><tr><th>Módszer</th><th>Eloszlás</th><th>Határmélység</th><th>Jelleg</th></tr></thead>
-    <tbody>
-      <tr><td class="m" style="color:var(--bous)"><b>Boussinesq</b></td><td>rugalmasságtani, pontos</td><td>n = 5 szabály</td><td class="m">referencia, „valódi" hagyma</td></tr>
-      <tr><td class="m" style="color:var(--kog)"><b>Kögler</b></td><td>α-szögű, tartományon belül egyenletes</td><td>nincs (n=5)</td><td class="m">durva, gyors; a csúcsot „elkeni"</td></tr>
-      <tr><td class="m" style="color:var(--jak)"><b>Jáky</b></td><td>háromszög (lineáris)</td><td>m<sub>0</sub>=2B·(1−B/2L)</td><td class="m">fejben számolható, népszerű</td></tr>
-      <tr><td class="m" style="color:var(--kany)"><b>Kany</b></td><td>karakterisztikus pont, táblázat</td><td>n = 5 szabály</td><td class="m">pontos, lamellás számításhoz</td></tr>
-    </tbody>
-  </table>
-  <div class="note"><strong>Megjegyzés:</strong> a Boussinesq- és Kögler/Jáky-görbe a <strong>tengely</strong> (középvonal) menti feszültség, a Kany viszont a <strong>karakterisztikus pont</strong> alatti — ezért fut a Kany kicsivel a Boussinesq-tengely alatt. A részletes, lépésenkénti levezetést és a kalkulátorokat lásd a süllyedésszámítási segédletben.</div>
-</section>
 
 <section id="kviz" class="reveal">
-  <div class="eyebrow">7 · Tudáspróba</div>
-  <h2>Kvíz — 20 kérdés</h2>
+  <div class="eyebrow">6 · Tudáspróba</div>
+  <h2>Kvíz — 15 kérdés</h2>
   <p class="lead">Kevert sorrend, magyarázatokkal: hagyma, szuperpozíció, építési sorrend, lemezalap.</p>
   <div class="quiz-box">
     <div id="quizMain">
@@ -415,7 +382,7 @@ h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
       <button class="btn quiz-next" id="qNext">Következő →</button>
     </div>
     <div class="quiz-result" id="quizResult">
-      <div class="quiz-score" id="qFinal">0 / 20</div>
+      <div class="quiz-score" id="qFinal">0 / 15</div>
       <div class="quiz-msg" id="qMsg"></div>
       <button class="btn" id="qRestart">↺ Újrakezdés</button>
     </div>
@@ -423,7 +390,7 @@ h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
 </section>
 
 <section id="konv" class="reveal">
-  <div class="eyebrow">8 · Jelölések és feltevések</div>
+  <div class="eyebrow">7 · Jelölések és feltevések</div>
   <h2>Számítási konvenciók</h2>
   <div class="panel">
     <h3 style="margin-top:0">Feszültségmező</h3>
@@ -699,40 +666,6 @@ document.querySelectorAll('#m2 .tg').forEach(b=>b.addEventListener('click',()=>{
 $("nf2").addEventListener('input',()=>{S2.nf=parseInt($("nf2").value);$("nf2v").textContent='n = '+S2.nf;up2();});
 $("b2").value=S2.B;$("g2").value=S2.g;$("p2").value=S2.p;$("z2").value=S2.z;$("nf2").value=S2.nf;$("nf2v").textContent='n = '+S2.nf;up2();
 
-/* ───────── 3. MÓDSZER-ÖSSZEVETÉS (SVG) ───────── */
-const KANY_Z=[0,0.05,0.10,0.20,0.30,0.40,0.50,0.60,0.80,1.00,1.50,2.00,3.00,4.00,5.00,6.00,7.00,8.00,10.0,15.0,20.0];
-const KANY_STRIP=[1.000,0.990,0.945,0.826,0.739,0.677,0.630,0.590,0.524,0.467,0.360,0.288,0.203,0.155,0.125,0.113,0.100,0.088,0.063,0.050,0.032];
-function kany(zb){if(zb<=0)return 1;if(zb>=20)return 0.032*20/zb;for(let i=1;i<KANY_Z.length;i++){if(zb<=KANY_Z[i]){const t=(zb-KANY_Z[i-1])/(KANY_Z[i]-KANY_Z[i-1]);return KANY_STRIP[i-1]+t*(KANY_STRIP[i]-KANY_STRIP[i-1]);}}return 0;}
-function bous(zb){const al=Math.atan(1/(2*zb));return (1/Math.PI)*(2*al+Math.sin(2*al));}
-function kogler(zb,aDeg){return 1/(1+2*zb*Math.tan(aDeg*Math.PI/180));}
-function jaky(zb){return zb<2?(1-zb/2):0;}
-const mOn={bous:true,kog:true,jak:true,kany:true};
-let kAlpha=45;
-function drawCmp(){
-  const svg=$("cmpSvg");
-  const px={x0:52,x1:540,y0:24,y1:356};
-  const zbMax=4;
-  const X=v=>px.x0+v*(px.x1-px.x0); // v=σz/p (0..1)
-  const Y=zb=>px.y0+zb/zbMax*(px.y1-px.y0);
-  let g='';
-  // rács
-  [0,0.2,0.4,0.6,0.8,1].forEach(v=>{g+='<line x1="'+X(v)+'" y1="'+px.y0+'" x2="'+X(v)+'" y2="'+px.y1+'" stroke="#e4ebe9"/><text x="'+X(v)+'" y="'+(px.y1+16)+'" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#64807d">'+v.toFixed(1)+'</text>';});
-  [0,1,2,3,4].forEach(zb=>{g+='<line x1="'+px.x0+'" y1="'+Y(zb)+'" x2="'+px.x1+'" y2="'+Y(zb)+'" stroke="#e4ebe9"/><text x="'+(px.x0-6)+'" y="'+(Y(zb)+4)+'" text-anchor="end" font-family="JetBrains Mono" font-size="10" fill="#64807d">'+zb+'</text>';});
-  function curve(fn,col,dash){let d='';for(let i=0;i<=100;i++){const zb=zbMax*i/100;const v=Math.max(0,fn(zb));d+=(i?' L':'M')+X(v).toFixed(1)+' '+Y(zb).toFixed(1);}return '<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="2.4" '+(dash?'stroke-dasharray="'+dash+'" ':'')+'stroke-linecap="round"/>';}
-  if(mOn.bous)g+=curve(bous,'#c2521f');
-  if(mOn.kog)g+=curve(zb=>kogler(zb,kAlpha),'#1b6fae','6 4');
-  if(mOn.jak)g+=curve(jaky,'#0e7c6b','2 4');
-  if(mOn.kany)g+=curve(kany,'#9a3fb0');
-  // tengelyek
-  g+='<line x1="'+px.x0+'" y1="'+px.y0+'" x2="'+px.x0+'" y2="'+px.y1+'" stroke="#0d272b" stroke-width="1.4"/>';
-  g+='<line x1="'+px.x0+'" y1="'+px.y0+'" x2="'+px.x1+'" y2="'+px.y0+'" stroke="#0d272b" stroke-width="1.4"/>';
-  g+='<text x="'+((px.x0+px.x1)/2)+'" y="'+(px.y1+34)+'" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#64807d">σz / p  (tengely menti)</text>';
-  g+='<text x="16" y="'+((px.y0+px.y1)/2)+'" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#64807d" transform="rotate(-90 16 '+((px.y0+px.y1)/2)+')">mélység z / B</text>';
-  svg.innerHTML=g;
-}
-document.querySelectorAll('#mToggles .tg').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m;mOn[m]=!mOn[m];b.classList.toggle('on',mOn[m]);drawCmp();}));
-$("ka").addEventListener('input',()=>{kAlpha=parseFloat($("ka").value);$("kaV").textContent=kAlpha+'°';drawCmp();});
-$("ka").value=kAlpha;$("kaV").textContent=kAlpha+'°';drawCmp();
 
 /* ───────── NAV + REVEAL ───────── */
 (function(){
@@ -754,11 +687,6 @@ $("ka").value=kAlpha;$("kaV").textContent=kAlpha+'°';drawCmp();
     {q:"Mi a szuperpozíció elve a feszültségszámításban?",o:["A feszültségek kioltják egymást","A lineárisan rugalmas talajban a feszültségek összeadódnak","A legnagyobb feszültség számít csak","A feszültség a mélységgel nő"],c:1,e:"Lineárisan rugalmas közegben több teher hatása az egyedi hatások összege — ezért bonthatunk bonyolult terhet egyszerű alakokra."},
     {q:"Két közeli alaptest között a feszültség az egyedülálló esethez képest:",o:["Kisebb","Nagyobb (a hagymák összeadódnak)","Ugyanakkora","Mindig zérus"],c:1,e:"A szuperpozíció miatt a köztük lévő talaj mindkét alaptól kap terhet, így a Δσz nagyobb — ezért dőlhetnek egymás felé a szomszédos alapok."},
     {q:"Azonos talpfeszültség mellett a szélesebb alaptest hagymája:",o:["Sekélyebb","Mélyebbre nyúlik le","Ugyanolyan mély","Nem alakul ki"],c:1,e:"A hagyma a B-vel skálázódik: kétszer szélesebb alap kétszer mélyebbre viszi le ugyanazt az izobárt — ezért süllyed nagyobbat azonos talpfeszültségnél is."},
-    {q:"Mit feltételez a Kögler-módszer a feszültségről a szétterülő tartományon belül?",o:["Háromszög-eloszlást","Egyenletes (konstans) feszültséget","Parabolikus eloszlást","Zérus feszültséget"],c:1,e:"Kögler az α-szögben szétterülő tartományon belül egyenletes feszültséget tételez fel — gyors, de durva közelítés, a középvonali csúcsot „elkeni”."},
-    {q:"Milyen feszültségeloszlású a Jáky-módszer?",o:["Egyenletes","Háromszög (lineárisan csökkenő a határmélységig)","Parabolikus","Lépcsős"],c:1,e:"A Jáky-eljárás háromszög-eloszlású: a feszültség az alapsíktól a m0 határmélységig lineárisan csökken zérusra — ezért fejben is számolható."},
-    {q:"Mi a Jáky-féle határmélység sávalapra?",o:["m0 = B","m0 = 2B","m0 = 5B","végtelen"],c:1,e:"Sávalapra (L→∞) m0 = 2B; négyzetes pilléralapra m0 = B; általánosan m0 = 2B·(1−B/2L)."},
-    {q:"Miért a karakterisztikus pont alatt számolunk a Kany-módszerben?",o:["Mert ott a legnagyobb a feszültség","Mert ott a feszültség a hajlékony és a merev alap átlagos süllyedésének egyaránt megfelel","Mert ott zérus a feszültség","Véletlenszerűen választott pont"],c:1,e:"A karakterisztikus pont (a középponttól ≈0,37·B, a széltől ≈0,13·B) alatti süllyedés egyaránt megfelel a hajlékony és a merev alap átlagos süllyedésének."},
-    {q:"Melyik módszer adja a tengely mentén a legnagyobb feszültséget a felszín közelében?",o:["Kögler","A Boussinesq-tengely (a hagyma magja)","Jáky","Mind egyforma"],c:1,e:"A Boussinesq középvonal a hagyma csúcsa — a közelítő módszerek (főleg Kögler) ezt a felszín közelében alulbecsülik."},
     {q:"Mi a határmélység szerepe a süllyedésszámításban?",o:["A talajvízszintet jelöli","Az a mélység, amely alatt a többletfeszültség már nem okoz mérhető süllyedést","Az alapsík mélysége","A fagyhatár"],c:1,e:"A σz(z) görbe csak z→∞-nél lenne zérus, így az integrál végtelen lenne; a határmélység (n=5 vagy Jáky m0) zárja le az összegzést."},
     {q:"Egy régi ház mellé újat építenek. Mi történik a régi ház alatti talajban?",o:["Semmi, a két alap független","A többletfeszültség megnő, a régi ház tovább süllyed, és a szomszéd felé dől","A feszültség csökken, mert az új ház „megtámasztja” a talajt","A régi ház felemelkedik"],c:1,e:"Az új ház hagymája a régi alá is benyúlik: ott nő a Δσz, ezért pótsüllyedés keletkezik — a szomszéd felőli oldalon nagyobb, így a régi ház az új felé dől. Az építkezés-filmben ez a V1 szelvényre rakódó új színű sáv."},
     {q:"Ugyanaz a két ház, de fordított építési sorrendben: mekkora lesz a végállapoti feszültség a talajban?",o:["Ugyanakkora — lineárisan rugalmas talajban a szuperpozíció sorrendfüggetlen","Nagyobb, ha a nehezebb épül előbb","Kisebb, ha a nehezebb épül előbb","A terhek arányától függ"],c:0,e:"A végállapoti Δσz a hatások összege, a sorrend nem számít. A sorrend azt dönti el, hogy KI szenvedi el a pótsüllyedést: mindig a korábban megépült ház."},
