@@ -34,21 +34,21 @@ nav{position:sticky;top:0;z-index:300;height:54px;background:rgba(245,244,251,0.
 .nav-link:hover{color:var(--ink)}.nav-link.active{color:var(--accent);border-bottom-color:var(--accent)}
 
 header.hero{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:2.2rem 1.5rem 1rem;}
-.hero-card{position:relative;overflow:hidden;border-radius:20px;padding:2.8rem 2.6rem 2.4rem;color:#fff;
+.hero-card{position:relative;overflow:hidden;border-radius:20px;padding:2.8rem 3rem 2.6rem;color:#fff;text-align:center;
   background:radial-gradient(700px 320px at 92% -10%,rgba(245,158,11,.45),transparent 60%),radial-gradient(520px 260px at 5% 110%,rgba(224,71,158,.35),transparent 60%),linear-gradient(135deg,#312E81 0%,#1E1B4B 55%,#13112F 100%);
   box-shadow:0 18px 50px -24px rgba(30,27,75,.55)}
 .hero-eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:1rem;}
-.hero h1{font-family:var(--display);font-weight:900;letter-spacing:-0.015em;font-size:clamp(2.2rem,5.6vw,3.9rem);line-height:1.02;color:#fff;text-transform:uppercase;}
+.hero h1{font-family:var(--display);font-weight:900;letter-spacing:-0.015em;font-size:clamp(2.2rem,5.6vw,3.9rem);line-height:1.02;color:#fff;text-transform:uppercase;margin:0 auto;max-width:900px}
 .hero h1 .thin{font-weight:600;color:#C7D2FE}
-.hero-sub{max-width:680px;margin-top:1.3rem;font-size:1.06rem;color:#DDDBF7}
+.hero-sub{max-width:880px;margin:1.4rem auto 0;font-size:1.06rem;color:#DDDBF7;text-align:justify;text-align-last:center;hyphens:auto}
 .hero-sub strong{color:#fff}.hero-sub a{color:#FCD34D}
-.hero-stats{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.4rem}
+.hero-stats{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.4rem;justify-content:center}
 .hero-stats span{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:6px 12px;border-radius:99px;font-size:.82rem;color:#EDEBFF}
 .hero-stats b{color:#fff;margin-right:4px}
-.hero-eq{margin-top:1.6rem;max-width:680px;font-family:var(--mono);font-size:1.02rem;color:#fff;background:rgba(255,255,255,.08);
+.hero-eq{margin:1.6rem auto 0;max-width:760px;font-family:var(--mono);font-size:1.02rem;color:#fff;background:rgba(255,255,255,.08);text-align:center;
   border:1px solid rgba(255,255,255,.18);border-left:3px solid var(--amber);border-radius:10px;padding:1rem 1.2rem;}
-.hero-eq small{display:block;font-family:var(--body);color:#D4D1F5;font-size:.85rem;margin-top:.5rem}
-.hero-cta{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.4rem}
+.hero-eq small{display:block;font-family:var(--body);color:#D4D1F5;font-size:.85rem;margin-top:.5rem;text-align:justify;text-align-last:center;hyphens:auto}
+.hero-cta{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.5rem;justify-content:center}
 .hero-cta a{text-decoration:none;font-family:var(--display);font-weight:700;font-size:.9rem;padding:.6rem 1rem;border-radius:10px;background:var(--amber);color:#1C1B3A}
 .hero-cta a.ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25)}
 
@@ -166,11 +166,11 @@ tr:last-child td{border-bottom:none}td.m{text-align:left;font-family:var(--body)
 footer{max-width:1040px;margin:3rem auto 0;padding:2rem 1.5rem 3rem;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink3);font-family:var(--mono);}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}.reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
-@media(max-width:600px){section{padding:2.4rem 1.1rem .6rem}header.hero{padding:1.4rem 1.1rem .6rem}.hero-card{padding:1.8rem 1.3rem}nav{padding:0 .9rem;gap:.9rem}}
+@media(max-width:600px){section{padding:2.4rem 1.1rem .6rem}header.hero{padding:1.4rem 1.1rem .6rem}.hero-card{padding:1.8rem 1.3rem}nav{padding:0 .9rem;gap:.9rem}.hero-sub,.hero-eq small{text-align:left;text-align-last:left}.hero-eq{white-space:normal;font-size:.95rem}}
 /* Magyar tipográfia — kiegyensúlyozott, olvasható tördelés */
 body{text-wrap:pretty}
 p,li,figcaption,blockquote,dd,.lead,.note,.card p,.panel-sub,.hero-sub{text-wrap:pretty;hyphens:none;text-align:justify}
-.card p,.chip,.ctrl label,.tl-txt,.quiz-opt,.hero-sub{text-align:left}
+.card p,.chip,.ctrl label,.tl-txt,.quiz-opt{text-align:left}
 h1,h2,h3,h4,.quiz-q,.panel-title{text-wrap:balance}
 .formula,.hero-eq,.eq{white-space:nowrap;overflow-x:auto}
 .formula small,.hero-eq small,.eq small{white-space:normal}
